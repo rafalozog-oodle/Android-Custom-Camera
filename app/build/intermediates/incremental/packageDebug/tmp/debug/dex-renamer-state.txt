@@ -1,4 +1,4 @@
-#Tue Mar 10 16:15:56 GMT 2020
+#Tue Mar 10 16:42:04 GMT 2020
 base.0=/Users/rafal.ozog/workspace/Android-Custom-Camera/app/build/intermediates/dex/debug/mergeExtDexDebug/out
 path.1=classes.dex
 renamed.1=classes2.dex
