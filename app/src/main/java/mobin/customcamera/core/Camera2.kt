@@ -44,9 +44,7 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
 
     private var cameraState = STATE_PREVIEW
 
-
     private var surface: Surface? = null
-
 
     /**
      * Whether the current camera device supports Flash or not.
@@ -58,12 +56,11 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
      */
     private var mSensorOrientation = 0
 
-
     private val cameraCaptureCallBack = object : CameraCaptureSession.CaptureCallback() {
 
         private fun process(captureResult: CaptureResult) {
             when (cameraState) {
-// We have nothing to do when the camera preview is working normally.
+                // We have nothing to do when the camera preview is working normally.
                 STATE_PREVIEW -> {
 
                 }
@@ -73,7 +70,7 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
                     if (afState == null) {
                         captureStillPicture()
                     } else if (afState == CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED || afState == CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED) {
-// CONTROL_AE_STATE can be null on some devices
+                        // CONTROL_AE_STATE can be null on some devices
                         val aeState = captureResult[CaptureResult.CONTROL_AE_STATE]
                         if (aeState == null || aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
                             cameraState = STATE_PICTURE_TAKEN
@@ -84,17 +81,15 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
                 }
 
                 STATE_WAITING_PRECAPTURE -> {
-// CONTROL_AE_STATE can be null on some devices
+                    // CONTROL_AE_STATE can be null on some devices
                     val aeState = captureResult[CaptureResult.CONTROL_AE_STATE]
                     if (aeState == null || aeState == CaptureResult.CONTROL_AE_STATE_PRECAPTURE || aeState == CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED) {
                         cameraState = STATE_WAITING_NON_PRECAPTURE
                     }
-
-
                 }
 
                 STATE_WAITING_NON_PRECAPTURE -> {
-// CONTROL_AE_STATE can be null on some devices
+                    // CONTROL_AE_STATE can be null on some devices
                     val aeState = captureResult[CaptureResult.CONTROL_AE_STATE]
                     if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
                         cameraState = STATE_PICTURE_TAKEN
@@ -123,7 +118,7 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
 
 
     private companion object {
-// These values represent Camera states.
+        // These values represent Camera states.
 
         // Showing Camera Preview.
         private const val STATE_PREVIEW = 0
@@ -135,7 +130,6 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
         private const val STATE_WAITING_NON_PRECAPTURE = 3
         // Picture was taken
         private const val STATE_PICTURE_TAKEN = 4
-
 
         private val ORIENTATIONS = SparseIntArray()
 
@@ -221,10 +215,9 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
 
     }
 
-
-//    private fun configureTransform() {
-//
-//    }
+        //    private fun configureTransform() {
+        //
+        //    }
 
     private val surfaceTextureListener = object : TextureView.SurfaceTextureListener {
         override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
@@ -266,16 +259,12 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
         if (textureView.isAvailable) {
             openCamera(textureView.width, textureView.height)
         } else textureView.surfaceTextureListener = surfaceTextureListener
-
-
     }
 
     fun close() {
         closeCamera()
         closeBackgroundThread()
-
     }
-
 
     private fun closeCamera() {
         if (cameraCaptureSession != null) {
@@ -298,7 +287,6 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
         }
     }
 
-
     private fun openCamera(width: Int, height: Int) {
         if (ContextCompat.checkSelfPermission(
                 textureView.context,
@@ -310,7 +298,6 @@ class Camera2(private val activity: Activity, private val textureView: AutoFitTe
             configureTransform(width, height)
 
             cameraManager.openCamera(cameraId, cameraStateCallback, backgroundHandler)
-
 
         } else Log.e("Camera2", "Requires Camera Permission")
     }
@@ -673,24 +660,17 @@ we set flash after the preview request is processed to ensure flash fires only d
      */
 
     private fun runPrecaptureSequence() {
+
         try {
-
-
-// Tell #cameraCaptureCallback to wait for the precapture sequence to be set.
+            // Tell #cameraCaptureCallback to wait for the precapture sequence to be set.
             cameraState = STATE_WAITING_PRECAPTURE
-
             setFlashMode(captureRequestBuilder!!, true)
-
             cameraCaptureSession!!.capture(captureRequestBuilder!!.build(), cameraCaptureCallBack, backgroundHandler)
-
 
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
-
-
     }
-
 
     private fun captureBitmap() {
         if (textureView.isAvailable) {
@@ -713,7 +693,6 @@ we set flash after the preview request is processed to ensure flash fires only d
             // Use the same AE and AF modes as the preview.
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
 
-
             setFlashMode(captureBuilder, true)
 
             // Orientation
@@ -729,11 +708,8 @@ we set flash after the preview request is processed to ensure flash fires only d
                     request: CaptureRequest,
                     result: TotalCaptureResult
                 ) {
-
                     captureBitmap()
                     unlockPreview()
-
-
                 }
             }, null)
 
@@ -741,8 +717,6 @@ we set flash after the preview request is processed to ensure flash fires only d
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
-
-
     }
 // uncomment to use
 
